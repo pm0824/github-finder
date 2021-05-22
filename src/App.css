@@ -10,7 +10,8 @@
 }
 
 * {
-  box-sizing: border-box;
+  box-sizing: border-box; /*The box-sizing property allows us to include the padding 
+                            and border in an element's total width and height.*/
   margin: 0;
   padding: 0;
 }
