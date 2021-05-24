@@ -1,12 +1,26 @@
-import React, { Component } from 'react'
-
+import React, { Component, Fragment } from 'react'
+import {Link} from 'react-router-dom'
+import Repos from '../repos/Repos'
+import PropTypes from 'prop-types'
+import Spinner from '../layout/Spinner'
 class User extends Component {
     componentDidMount(){
         this.props.getUser(this.props.match.params.login);
+        this.props.getUserRepos(this.props.match.params.login);
     }
+
+    static propTypes = {
+        loading:PropTypes.bool,
+        getUser:PropTypes.func.isRequired,
+        getUserRepos:PropTypes.func.isRequired,
+        user:PropTypes.object.isRequired,
+        repos:PropTypes.array.isRequired,
+    }
+
     render() {
         const {
             name,
+            company,
             avatar_url,
             location,
             bio,
@@ -19,11 +33,72 @@ class User extends Component {
             public_gists,
             hireable
         } = this.props.user;
-        const {loading} = this.props.loading;
+
+        const {loading,repos} = this.props;
+
+        if(loading) return <Spinner/>
         return (
-            <div>
-                {name}
-            </div>
+           <Fragment>
+                <Link to='/' className='btn btn-light'>Back to Search</Link>
+                Hireable: {' '}
+                {hireable?
+                <i className='fas fa-check text-success'/> :
+                <i className='fas fa-times-circle text-danger'/>
+                }
+                <div className="card grid-2">
+                    <div className="all-center">
+                        <img 
+                        src={avatar_url}
+                        className='round-img'
+                        alt=''
+                        style={{width:'150px'}}
+                        />
+                        <h3>{name}</h3>
+                        <p>Location: {location}</p>
+                    </div>
+                    <div>
+                    {bio && <Fragment>
+                        <h3>Bio:</h3>
+                        <p>{bio}</p>
+                    </Fragment>}
+                    <a href={html_url} target='__blank' className='btn btn-primary my-1'>
+                        Go to GitHub Profile
+                    </a>
+                    <ul>
+                        <li>
+                            {login && <Fragment>
+                                Username: {login}
+                            </Fragment>}
+                        </li>
+                        <li>
+                            {company && <Fragment>
+                                Company: {company}
+                            </Fragment>}
+                        </li>
+                        <li>
+                            {blog && <Fragment>
+                                Blog: {blog}
+                            </Fragment>}
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+                <div className="card text-center">
+                    <div className="badge badge-success">
+                        Followers: {followers}
+                    </div>
+                    <div className="badge badge-danger">
+                        Following: {following}
+                    </div>
+                    <div className="badge badge-light">
+                        Public Repos: {public_repos}
+                    </div>
+                    <div className="badge badge-dark">
+                        Public Gists: {public_gists}
+                    </div>
+                </div>
+                <Repos repos={repos}/>
+           </Fragment>
         )
     }
 }
