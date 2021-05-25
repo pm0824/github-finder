@@ -1,42 +1,31 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-class Search extends Component {
-    state={
-        text:''
-    }
-
-    static propTypes={
-        searchUsers: PropTypes.func.isRequired,   //ptfr+tab
-        clearUsers: PropTypes.func.isRequired,
-        showClear:PropTypes.bool.isRequired,
-        setAlert:PropTypes.func.isRequired,
-    }    
+const Search =({searchUsers,clearUsers,showClear,setAlert})=> {
+    const [text,setText] = useState('');
     
     //Passing props up and search
-    onSubmit =(e)=>{                    //must be arrow fun otherwise use bind while call
+    const onSubmit =(e)=>{                    //must be arrow fun otherwise use bind while call
         e.preventDefault();
-        if(this.state.text===''){
-            this.props.setAlert("Please enter something to search","light");
+        if(text===''){
+           setAlert("Please enter something to search","light");
         }
         else{
-            this.props.searchUsers(this.state.text);
-            this.setState({text:''});
+            searchUsers(text);
+            setText('');
         }
     }
-    onChange = (e)=> this.setState({[e.target.name]:e.target.value})  //name:value
+    const onChange = (e)=> setText(e.target.value)  //name:value
 
-    render() {
-        const {showClear, clearUsers} = this.props;
         return (
             <div>
-                <form onSubmit={this.onSubmit} className='form'>
+                <form onSubmit={onSubmit} className='form'>
                     <input 
                     type="text" 
                     name="text" 
                     placeholder='Search User'
-                    onChange = {this.onChange}
-                    value={this.state.text}
+                    onChange = {onChange}
+                    value={text}
                     />
                     <input type="submit" value="Search" className='btn btn-dark btn-block'/>
                 </form>
@@ -46,7 +35,13 @@ class Search extends Component {
                 </button>}
             </div>
         )
-    }
 }
+
+Search.propTypes={
+    searchUsers: PropTypes.func.isRequired,   //ptfr+tab
+    clearUsers: PropTypes.func.isRequired,
+    showClear:PropTypes.bool.isRequired,
+    setAlert:PropTypes.func.isRequired,
+}    
 
 export default Search
